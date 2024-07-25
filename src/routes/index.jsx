@@ -3,6 +3,9 @@ import PageNotFound from "../pages/PageNotFound";
 import LayoutHome from "../layouts/LayoutHome";
 import InventarioComp from "../components/home/InventarioComp";
 import ComprarComp from "../components/home/ComprarComp";
+import VenderComp from "../components/home/VenderComp";
+import EstadisticasComp from "../components/home/EstadisticasComp";
+import ActividadesComp from "../components/home/ActividadesComp";
 
 export const router = createBrowserRouter([
     
@@ -12,7 +15,10 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <InventarioComp />  },
        
-        {path: 'comprar', element: <ComprarComp/>}
+        {path: 'comprar', element: <ComprarComp/>},
+        {path: 'vender', element: <VenderComp/>},
+        {path: 'estadisticas', element: <EstadisticasComp/>},
+        {path: 'actividad', element: <ActividadesComp/>}
 
         
       ],

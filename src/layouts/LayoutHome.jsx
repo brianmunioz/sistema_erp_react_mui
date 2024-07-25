@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Container, Stack } from '@mui/material';
-import NavBarComp from '../components/navbar/NavBarComp';
+import CambiarRolComp from '../components/navbar/CambiarRolComp';
 
 
 function TabPanel(props) {
@@ -52,6 +52,12 @@ function LayoutHome() {
                 return 1;
             case '/comprar':
                 return 2;
+            case '/vender':
+                return 3;
+            case '/estadisticas':
+                return 4;
+            case '/actividad':
+                return 5;
             default:
                 return 1;
         }
@@ -66,18 +72,30 @@ function LayoutHome() {
                 break;
             case 2: navigate('/comprar')
                 break;
+                case 3: navigate('/vender')
+                break;
+                case 4: navigate('/estadisticas')
+                break;
+                case 5: navigate('/actividad')
+                break;
+            
             default: break;
 
         }
     }, [navigate, value])
     const handleChange = (event, newValue) => {
-        console.log('value', newValue)
         switch (newValue) {
             case 1: navigate('/')
                 break;
-
             case 2: navigate('/comprar')
                 break;
+                case 3: navigate('/vender')
+                break;
+                case 4: navigate('/estadisticas')
+                break;
+                case 5: navigate('/actividad')
+                break;
+            
             default: break;
 
         }
@@ -113,13 +131,13 @@ function LayoutHome() {
                 <Tab label="Vender" {...a11yProps(2)} />
                 <Tab label="Estadisticas" {...a11yProps(3)} />
                 <Tab label="Actividad" {...a11yProps(4)} />
-          
+
 
             </Tabs>
             <Stack value={value} style={{ width: "calc(100vw - 300px)", padding: 0 }} index={value}>
-                <NavBarComp />
+                <CambiarRolComp />
                 <Container fluid>
-                <Outlet />
+                    <Outlet />
                 </Container>
             </Stack>
 
