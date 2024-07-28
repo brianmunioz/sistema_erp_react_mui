@@ -5,9 +5,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Container, Stack } from '@mui/material';
-import CambiarRolComp from '../components/navbar/CambiarRolComp';
-
+import { AppBar, Container, Dialog, IconButton, Stack, Toolbar } from '@mui/material';
+import CambiarRolComp from '../components/btnCambiarRol/CambiarRolComp';
+import CloseIcon from '@mui/icons-material/Close';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -50,33 +50,65 @@ function LayoutHome() {
         switch (path) {
             case '/':
                 return 1;
-            case '/comprar':
-                return 2;
             case '/vender':
-                return 3;
+                return 2;
             case '/estadisticas':
-                return 4;
+                return 3;
             case '/actividad':
-                return 5;
+                return 4;
             default:
                 return 1;
         }
     };
 
     const [value, setValue] = React.useState(pathToIndex(location.pathname));
+  
     const navigate = useNavigate();
+    React.useEffect(()=>{
+        let openRequest = indexedDB.open("inventario", 1);
+        openRequest.onupgradeneeded = function(event) {
+            let db = event.target.result;
+                if (!db.objectStoreNames.contains("productos")) {
+                let objectStore = db.createObjectStore("productos", { keyPath: "id", autoIncrement: true });
+                objectStore.createIndex("nombre", "nombre", { unique: false });
+                objectStore.createIndex("cantidad", "cantidad", { unique: false });
+                objectStore.createIndex("categoria", "categoria", { unique: false });
+                objectStore.createIndex("precioVenta", "precioVenta", { unique: false });
+                objectStore.createIndex("precioCompra", "precioCompra", { unique: false });
+
+                let requestAdd = objectStore.add({ nombre: "primero", cantidad: 25, categoria: 1, precioVenta: 2900, precioCompra: 2000 });
+                requestAdd.onsuccess = function(event) {
+                    console.log("Datos añadidos con ID:", event.target.result);
+                };
+            
+                requestAdd.onerror = function(event) {
+                    console.log("Error al añadir datos:", event.target.errorCode);
+                };
+            }
+        };
+        
+        openRequest.onsuccess = function(event) {
+            let db = event.target.result;
+            console.log('db abierta', db)
+        
+       
+        };
+        
+        openRequest.onerror = function(event) {
+            console.log("Error al abrir la base de datos:", event.target.errorCode);
+        };
+        
+    },[])
 
     React.useEffect(() => {
         switch (value) {
             case 1: navigate('/')
                 break;
-            case 2: navigate('/comprar')
+                case 2: navigate('/vender')
                 break;
-                case 3: navigate('/vender')
+                case 3: navigate('/estadisticas')
                 break;
-                case 4: navigate('/estadisticas')
-                break;
-                case 5: navigate('/actividad')
+                case 4: navigate('/actividad')
                 break;
             
             default: break;
@@ -87,13 +119,11 @@ function LayoutHome() {
         switch (newValue) {
             case 1: navigate('/')
                 break;
-            case 2: navigate('/comprar')
+                case 2: navigate('/vender')
                 break;
-                case 3: navigate('/vender')
+                case 3: navigate('/estadisticas')
                 break;
-                case 4: navigate('/estadisticas')
-                break;
-                case 5: navigate('/actividad')
+                case 4: navigate('/actividad')
                 break;
             
             default: break;
@@ -104,6 +134,7 @@ function LayoutHome() {
 
 
     return (
+        <>
         <Box
             sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh', width: "100vw" }}
         >
@@ -127,10 +158,9 @@ function LayoutHome() {
                 </Stack>
 
                 <Tab label="Inventario" {...a11yProps(0)} />
-                <Tab label="Comprar" {...a11yProps(1)} />
-                <Tab label="Vender" {...a11yProps(2)} />
-                <Tab label="Estadisticas" {...a11yProps(3)} />
-                <Tab label="Actividad" {...a11yProps(4)} />
+                <Tab label="Vender" {...a11yProps(1)} />
+                <Tab label="Estadisticas" {...a11yProps(2)} />
+                <Tab label="Actividad" {...a11yProps(3)} />
 
 
             </Tabs>
@@ -142,6 +172,8 @@ function LayoutHome() {
             </Stack>
 
         </Box>
+    
+        </>
 
     );
 }

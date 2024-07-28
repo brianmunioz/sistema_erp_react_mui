@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,39 +12,40 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import CloseIcon from '@mui/icons-material/Close';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import CreateIcon from '@mui/icons-material/Create';
 import { visuallyHidden } from '@mui/utils';
 import { Colors } from '../../utils/Colors';
-
+import { AppBar,List, Button, Dialog, Divider, IconButton, ListItemButton, ListItemText, Slide, Stack, Input, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 function createData(id, producto, categoria, precioVenta, cantidad) {
   return {
     id,
     producto,
     categoria,
-      precioVenta,
-       cantidad
+    precioVenta,
+    cantidad
   };
 }
 
 const rows = [
   createData(1, 'Muñeco Darth Vader', 'Muñecos', 200, 67),
   createData(2, 'Nave Star Wars', 'Naves', 300, 51),
-  createData(3, 'Bob esponja edicion navideña', 'Muñecos', 25.6, 24),
+  createData(3, 'Vegeta SSJ2', 'Muñecos', 25.6, 24),
   createData(4, 'Ajedrez', 'Juegos de mesa', 29, 5),
-  createData(5, '100 cartas de yu gi oh', 'Cartas', 75, 49 ),
-  createData(6, 'Casco Darth Vader', "Mascaras",900, 3 ),
+  createData(5, '100 cartas de yu gi oh', 'Cartas', 75, 49),
+  createData(6, 'Casco Darth Vader', "Mascaras", 900, 3),
   createData(7, 'Pistola de agua', 'Juegos de verano', 9, 37),
-  createData(8, 'Goku ssj4', 'Muñecos', 390, 20 ),
-  createData(9, 'Microfono', 'Musical', 26.9, 65 ),
+  createData(8, 'Goku ssj4', 'Muñecos', 390, 20),
+  createData(9, 'Microfono', 'Musical', 26.9, 65),
   createData(10, 'Pelota de basketball', 'Deportes', 98, 28),
   createData(11, 'Pelota de futbol', 'Deportes', 20, 81),
-  createData(12, 'Arco de futbol', 'Deportes', 19.1, 9 ),
-  createData(13, 'Piano', 'Musical', 18.23, 10 ),
+  createData(12, 'Arco de futbol', 'Deportes', 19.1, 9),
+  createData(13, 'Piano', 'Musical', 18.23, 10),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -66,6 +66,7 @@ function getComparator(order, orderBy) {
 
 
 function stableSort(array, comparator) {
+
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -120,23 +121,19 @@ function EnhancedTableHead(props) {
   return (
     <TableHead >
       <TableRow bgcolor={Colors.terciary.main}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
+        <TableCell
+          align={'center'}
+          sx={{ fontWeight: 800, color: Colors.secondary.contrastText }}
+        >
+          Acciones
+
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={'right' }
-           
-            sx={{fontWeight: 800, color: Colors.primary.contrastText}}
+            align={'right'}
+
+            sx={{ fontWeight: 800, color: Colors.secondary.contrastText }}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -169,63 +166,152 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const [open, setOpen] = React.useState(false);
 
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
+        bgcolor: Colors.cuaternary.main
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          color={'primary'}
-          fontWeight={800}
-          id="tableTitle"
-          component="div"
-        >
-          Stock de productos
-        </Typography>
-      )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Typography
+        sx={{ flex: '1 1 100%' }}
+        variant="h6"
+        color={'primary'}
+        fontWeight={800}
+        id="tableTitle"
+        component="div"
+      >
+        Stock de productos
+      </Typography>
+
+      <Button variant="contained" sx={{ fontWeight: 800 }} onClick={async () => {
+        handleClickOpen()
+    // Almacenar el api en una variable
+
+    // Crear la variable que almacenará la instancia de la base de datos
+    let db;
+
+    // Crear la conexión a la base de datos e indicar la versión
+    const conexiondb = indexedDB.open('inventario', 1);
+
+    // Evento que se dispara cuando la base de datos se abre
+    conexiondb.onsuccess = () => {
+        db = conexiondb.result;
+        console.log('Base de datos abierta', db);
+
+        // Crear una transacción y obtener el almacén de objetos
+        const transaccion = db.transaction(['productos'], 'readwrite');
+        const coleccionObjetos = transaccion.objectStore('productos');
+
+        // Ejecutar el método deseado sobre la colección
+        const conexion = coleccionObjetos.add({
+            nombre: "agregado",
+            cantidad: 99,
+            categoriaId: 2,
+            precioVenta: 900,
+            precioCompra: 600
+        });
+
+        conexion.onsuccess = () => {
+            console.log("Nuevo producto agregado");
+        };
+
+        conexion.onerror = (event) => {
+            console.log("Error al agregar el producto:", event.target.error);
+        };
+    };
+
+    conexiondb.onerror = (event) => {
+        console.log("Error al abrir la base de datos:", event.target.errorCode);
+    };
+
+    conexiondb.onupgradeneeded = (event) => {
+        db = event.target.result;
+        if (!db.objectStoreNames.contains('productos')) {
+            db.createObjectStore('productos', { keyPath: 'id', autoIncrement: true });
+        }
+    };
+}} color="secondary">Agregar</Button>
+    <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              Agregar Producto
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleClose}>
+              Guardar
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Stack direction={'column'} justifyContent="space-between" alignItems={'center'} p={5}>
+        <TextField sx={{marginBottom: 2}} fullWidth label="Nombre del producto"  />   
+        <TextField sx={{marginBottom: 2}} fullWidth label="Precio de compra"  />
+        <TextField sx={{marginBottom: 2}} fullWidth label="Precio de venta"  />
+        <TextField type='number'sx={{marginBottom: 2}} fullWidth label="Cantidad"  />
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
+        <InputLabel id="demo-simple-select-standard-label">Categoria</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+        
+          label="Categoria"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={10}>Muñecos</MenuItem>
+          <MenuItem value={20}>Naves</MenuItem>
+          <MenuItem value={30}>Deportes</MenuItem>
+        </Select>
+      </FormControl>
+        
+             </Stack>
+      </Dialog>
+
     </Toolbar>
   );
 }
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
 
- const InventarioComp = ()=> {
+
+const InventarioComp = () => {
+  const [datos, setDatos] = React.useState([]);
+  React.useEffect(() => {
+    if (!localStorage.getItem('inventario')) {
+      localStorage.setItem('inventario', JSON.stringify(rows))
+      setDatos(rows);
+    } else {
+      const datosnuevos = [...JSON.parse(localStorage.getItem('inventario')), createData(99, 'Muñeco gallardo', 'Muñecos', 1, 1)]
+      localStorage.setItem('inventario', JSON.stringify(datosnuevos))
+
+      setDatos(datosnuevos)
+
+    }
+  }, [])
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -241,7 +327,7 @@ EnhancedTableToolbar.propTypes = {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = datos.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -276,26 +362,24 @@ EnhancedTableToolbar.propTypes = {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - datos.length) : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(datos, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
     [order, orderBy, page, rowsPerPage],
   );
-
+  console.log(datos)
   return (
+    <>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
@@ -311,10 +395,10 @@ EnhancedTableToolbar.propTypes = {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={datos.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {datos.length > 0 && visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -329,14 +413,13 @@ EnhancedTableToolbar.propTypes = {
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
+                    <TableCell >
+                      <Stack direction="row" justifyContent="space-between">
+                        <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() => alert('borrado!')} />
+                        <CreateIcon sx={{ color: "grey" }} onClick={() => alert('Editado!')} />
+
+                      </Stack>
+
                     </TableCell>
                     <TableCell
                       component="th"
@@ -354,7 +437,7 @@ EnhancedTableToolbar.propTypes = {
                   </TableRow>
                 );
               })}
-              {emptyRows > 0 && (
+              {datos.length > 0 && emptyRows > 0 && (
                 <TableRow
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
@@ -366,18 +449,22 @@ EnhancedTableToolbar.propTypes = {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        {
+          datos.length > 0 &&
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={datos.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        }
+
       </Paper>
-      
     </Box>
+    </>
   );
 }
 export default InventarioComp

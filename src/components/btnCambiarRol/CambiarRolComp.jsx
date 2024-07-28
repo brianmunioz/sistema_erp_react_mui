@@ -71,6 +71,7 @@ const StyledMenu = styled((props) => (
   };
 
   const handleClose = (index) => {
+    localStorage.setItem('rol',rol[index])
     setRolIndex(index)
     setAnchorEl(null);
   };
