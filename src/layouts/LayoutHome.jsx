@@ -5,7 +5,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { AppBar, Container, Dialog, IconButton, Stack, Toolbar } from '@mui/material';
+import {  Container, Stack, Toolbar } from '@mui/material';
 import CambiarRolComp from '../components/btnCambiarRol/CambiarRolComp';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -45,6 +45,8 @@ function a11yProps(index) {
 
 function LayoutHome() {
     const location = useLocation();
+    
+
 
     const pathToIndex = (path) => {
         switch (path) {
@@ -65,39 +67,7 @@ function LayoutHome() {
   
     const navigate = useNavigate();
     React.useEffect(()=>{
-        let openRequest = indexedDB.open("inventario", 1);
-        openRequest.onupgradeneeded = function(event) {
-            let db = event.target.result;
-                if (!db.objectStoreNames.contains("productos")) {
-                let objectStore = db.createObjectStore("productos", { keyPath: "id", autoIncrement: true });
-                objectStore.createIndex("nombre", "nombre", { unique: false });
-                objectStore.createIndex("cantidad", "cantidad", { unique: false });
-                objectStore.createIndex("categoria", "categoria", { unique: false });
-                objectStore.createIndex("precioVenta", "precioVenta", { unique: false });
-                objectStore.createIndex("precioCompra", "precioCompra", { unique: false });
-
-                let requestAdd = objectStore.add({ nombre: "primero", cantidad: 25, categoria: 1, precioVenta: 2900, precioCompra: 2000 });
-                requestAdd.onsuccess = function(event) {
-                    console.log("Datos añadidos con ID:", event.target.result);
-                };
-            
-                requestAdd.onerror = function(event) {
-                    console.log("Error al añadir datos:", event.target.errorCode);
-                };
-            }
-        };
-        
-        openRequest.onsuccess = function(event) {
-            let db = event.target.result;
-            console.log('db abierta', db)
-        
-       
-        };
-        
-        openRequest.onerror = function(event) {
-            console.log("Error al abrir la base de datos:", event.target.errorCode);
-        };
-        
+       console.log("efecto secundario: jaja")
     },[])
 
     React.useEffect(() => {

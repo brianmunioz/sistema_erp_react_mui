@@ -13,39 +13,42 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import CloseIcon from '@mui/icons-material/Close';
+import { v4 as uuidv4 } from 'uuid';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import { visuallyHidden } from '@mui/utils';
 import { Colors } from '../../utils/Colors';
-import { AppBar,List, Button, Dialog, Divider, IconButton, ListItemButton, ListItemText, Slide, Stack, Input, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { AppBar, Button, Dialog, IconButton, Slide, Stack, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-function createData(id, producto, categoria, precioVenta, cantidad) {
+function createData(id, producto, categoria, precioCompra, precioVenta, cantidad) {
   return {
     id,
     producto,
     categoria,
+    precioCompra,
     precioVenta,
+
     cantidad
   };
 }
 
 const rows = [
-  createData(1, 'Muñeco Darth Vader', 'Muñecos', 200, 67),
-  createData(2, 'Nave Star Wars', 'Naves', 300, 51),
-  createData(3, 'Vegeta SSJ2', 'Muñecos', 25.6, 24),
-  createData(4, 'Ajedrez', 'Juegos de mesa', 29, 5),
-  createData(5, '100 cartas de yu gi oh', 'Cartas', 75, 49),
-  createData(6, 'Casco Darth Vader', "Mascaras", 900, 3),
-  createData(7, 'Pistola de agua', 'Juegos de verano', 9, 37),
-  createData(8, 'Goku ssj4', 'Muñecos', 390, 20),
-  createData(9, 'Microfono', 'Musical', 26.9, 65),
-  createData(10, 'Pelota de basketball', 'Deportes', 98, 28),
-  createData(11, 'Pelota de futbol', 'Deportes', 20, 81),
-  createData(12, 'Arco de futbol', 'Deportes', 19.1, 9),
-  createData(13, 'Piano', 'Musical', 18.23, 10),
+  createData(uuidv4(), 'Acer aspire 5', 'Computadoras', 1000, 1500, 67),
+  createData(uuidv4(), 'Samsung s20', 'Teléfonos', 300, 600, 20),
+  createData(uuidv4(), 'Smartwatch Android', 'Accesorios', 25.6, 34, 24),
+  createData(uuidv4(), 'Auriculares inalambricos', 'Accesorios', 29, 32, 5),
+  createData(uuidv4(), 'Monitor 4K', 'Periféricos', 75, 120, 49),
+  createData(uuidv4(), 'Placa gráfica 8gb', "Periféricos", 900, 2000, 3),
+  createData(uuidv4(), 'Router Wi fi', 'Redes', 9, 200, 37),
+  createData(uuidv4(), 'Teclado mecánico', 'Periféricos', 390, 500, 20),
+  createData(uuidv4(), 'Microfono', 'Periféricos', 26.9, 29, 65),
+  createData(uuidv4(), 'IPhone X', 'Teléfonos', 300, 950.5, 28),
+  createData(uuidv4(), 'Mouse inalámbrico', 'Periféricos', 20, 23, 81),
+  createData(uuidv4(), 'Luces led decorativas', 'Accesorios', 19.1, 20, 9),
+  createData(uuidv4(), 'Cargador de iphone', 'Accesorios', 18.23, 290, 10),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -112,7 +115,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { order, orderBy, onRequestSort } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -157,9 +160,8 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
@@ -167,14 +169,26 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const [open, setOpen] = React.useState(false);
+  const [productonuevo, setProductonuevo] = React.useState({
+    producto: '',
+    categoria: '',
+    precioVenta: '',
+    cantidad: 1
+  })
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setProductonuevo({
+      producto: '',
+      categoria: '',
+      precioVenta: '',
+      cantidad: 1
+    })
+    setOpen(false);
+  };
   return (
     <Toolbar
       sx={{
@@ -197,53 +211,8 @@ function EnhancedTableToolbar(props) {
 
       <Button variant="contained" sx={{ fontWeight: 800 }} onClick={async () => {
         handleClickOpen()
-    // Almacenar el api en una variable
-
-    // Crear la variable que almacenará la instancia de la base de datos
-    let db;
-
-    // Crear la conexión a la base de datos e indicar la versión
-    const conexiondb = indexedDB.open('inventario', 1);
-
-    // Evento que se dispara cuando la base de datos se abre
-    conexiondb.onsuccess = () => {
-        db = conexiondb.result;
-        console.log('Base de datos abierta', db);
-
-        // Crear una transacción y obtener el almacén de objetos
-        const transaccion = db.transaction(['productos'], 'readwrite');
-        const coleccionObjetos = transaccion.objectStore('productos');
-
-        // Ejecutar el método deseado sobre la colección
-        const conexion = coleccionObjetos.add({
-            nombre: "agregado",
-            cantidad: 99,
-            categoriaId: 2,
-            precioVenta: 900,
-            precioCompra: 600
-        });
-
-        conexion.onsuccess = () => {
-            console.log("Nuevo producto agregado");
-        };
-
-        conexion.onerror = (event) => {
-            console.log("Error al agregar el producto:", event.target.error);
-        };
-    };
-
-    conexiondb.onerror = (event) => {
-        console.log("Error al abrir la base de datos:", event.target.errorCode);
-    };
-
-    conexiondb.onupgradeneeded = (event) => {
-        db = event.target.result;
-        if (!db.objectStoreNames.contains('productos')) {
-            db.createObjectStore('productos', { keyPath: 'id', autoIncrement: true });
-        }
-    };
-}} color="secondary">Agregar</Button>
-    <Dialog
+      }} color="secondary">Agregar</Button>
+      <Dialog
         fullScreen
         open={open}
         onClose={handleClose}
@@ -262,34 +231,63 @@ function EnhancedTableToolbar(props) {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Agregar Producto
             </Typography>
-            <Button autoFocus color="inherit" onClick={handleClose}>
+            <Button autoFocus color="inherit" onClick={
+              () => {
+                console.log(productonuevo)
+                const regexDecimales = /^\d*\.?\d*$/;
+                const regexNaturales = /^\d*$/;
+                if (!productonuevo.producto) {
+                  alert("debe ingresar el nombre del producto")
+
+                } else if (!productonuevo.cantidad || !regexNaturales.test(productonuevo.cantidad)) {
+                  alert('Cantidad inválida')
+                } else if (!productonuevo.precioCompra || !regexDecimales.test(productonuevo.precioCompra)) {
+                  alert('precio de compra inválida')
+                } else if (!productonuevo.precioVenta || !regexDecimales.test(productonuevo.precioVenta)) {
+                  alert('precioVenta  ')
+                }else{
+                  const productosActualizados = JSON.parse(localStorage.getItem('inventario'))
+                  productosActualizados.push(createData(uuidv4(),productonuevo.producto,
+                  productonuevo.categoria,
+                   productonuevo.precioCompra,
+                  productonuevo.precioVenta,
+                productonuevo.cantidad))
+                  localStorage.setItem('inventario', JSON.stringify(productosActualizados))
+                  alert("Producto guardado! ");
+                  handleClose();
+                }
+              }
+
+            }>
               Guardar
             </Button>
           </Toolbar>
         </AppBar>
         <Stack direction={'column'} justifyContent="space-between" alignItems={'center'} p={5}>
-        <TextField sx={{marginBottom: 2}} fullWidth label="Nombre del producto"  />   
-        <TextField sx={{marginBottom: 2}} fullWidth label="Precio de compra"  />
-        <TextField sx={{marginBottom: 2}} fullWidth label="Precio de venta"  />
-        <TextField type='number'sx={{marginBottom: 2}} fullWidth label="Cantidad"  />
-        <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
-        <InputLabel id="demo-simple-select-standard-label">Categoria</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-        
-          label="Categoria"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Muñecos</MenuItem>
-          <MenuItem value={20}>Naves</MenuItem>
-          <MenuItem value={30}>Deportes</MenuItem>
-        </Select>
-      </FormControl>
-        
-             </Stack>
+          <TextField sx={{ marginBottom: 2 }} value={productonuevo.producto} onChange={(e) => setProductonuevo({ ...productonuevo, producto: e.target.value })} fullWidth label="Nombre del producto" />
+          <TextField sx={{ marginBottom: 2 }} value={productonuevo.precioCompra} onChange={(e) => setProductonuevo({ ...productonuevo, precioCompra: e.target.value })} fullWidth label="Precio de compra" />
+          <TextField sx={{ marginBottom: 2 }} value={productonuevo.precioVenta} onChange={(e) => setProductonuevo({ ...productonuevo, precioVenta: e.target.value })} fullWidth label="Precio de venta" />
+          <TextField type='number' sx={{ marginBottom: 2 }} value={productonuevo.cantidad} onChange={(e) => setProductonuevo({ ...productonuevo, cantidad: e.target.value })} fullWidth label="Cantidad" />
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
+            <InputLabel id="demo-simple-select-standard-label">Categoria</InputLabel>
+            <Select
+              labelId="demo-simple-select-standard-label"
+              id="demo-simple-select-standard"
+              value={productonuevo.categoria} onChange={(e) => setProductonuevo({ ...productonuevo, categoria: e.target.value })}
+              label="Categoria"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={'Accesorios'}>Accesorios</MenuItem>
+              <MenuItem value={'Teléfonos'}>Teléfonos</MenuItem>
+              <MenuItem value={'Computadoras'}>Computadoras</MenuItem>
+              <MenuItem value={'Periféricos'}>Periféricos</MenuItem>
+              <MenuItem value={'Redes'}>Redes</MenuItem>
+            </Select>
+          </FormControl>
+
+        </Stack>
       </Dialog>
 
     </Toolbar>
@@ -306,18 +304,23 @@ const InventarioComp = () => {
       setDatos(rows);
     } else {
       const datosnuevos = [...JSON.parse(localStorage.getItem('inventario')), createData(99, 'Muñeco gallardo', 'Muñecos', 1, 1)]
-      localStorage.setItem('inventario', JSON.stringify(datosnuevos))
 
       setDatos(datosnuevos)
 
     }
   }, [])
+
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
+  const [orderBy, setOrderBy] = React.useState('ID');
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [visibleRows, setVisibleRows] = React.useState([]);
+
+  React.useEffect(() => {
+    const newVisibleRows = stableSort(datos, getComparator(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    setVisibleRows(newVisibleRows);
+  }, [datos, order, orderBy, page, rowsPerPage]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -325,33 +328,9 @@ const InventarioComp = () => {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = datos.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
 
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
-  };
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -361,109 +340,99 @@ const InventarioComp = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const agregarProducto = () => {
 
 
-  const isSelected = (id) => selected.indexOf(id) !== -1;
+  }
+
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - datos.length) : 0;
 
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(datos, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
-      ),
-    [order, orderBy, page, rowsPerPage],
-  );
-  console.log(datos)
+
   return (
     <>
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={datos.length}
-            />
-            <TableBody>
-              {datos.length > 0 && visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <EnhancedTableToolbar />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: '100%' }}
+              aria-labelledby="tableTitle"
+            >
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
 
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell >
-                      <Stack direction="row" justifyContent="space-between">
-                        <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() => alert('borrado!')} />
-                        <CreateIcon sx={{ color: "grey" }} onClick={() => alert('Editado!')} />
+              />
+              <TableBody>
+                {visibleRows && visibleRows.length > 0 ? visibleRows.map((row, index) => {
 
-                      </Stack>
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      align='right'
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                  return (
+                    <TableRow
+                      hover
+
+                      tabIndex={-1}
+                      key={row.id}
+                      sx={{ cursor: 'pointer' }}
                     >
-                      {row.producto}
-                    </TableCell>
-                    <TableCell align="right">{row.cantidad}</TableCell>
-                    <TableCell align="right">{row.precioVenta}</TableCell>
-                    <TableCell align="right">{row.categoria}</TableCell>
-                    <TableCell align="right">{row.id}</TableCell>
-                  </TableRow>
-                );
-              })}
-              {datos.length > 0 && emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {
-          datos.length > 0 &&
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={datos.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        }
+                      <TableCell >
+                        <Stack direction="row" justifyContent="space-between">
+                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() => alert('borrado!')} />
+                          <CreateIcon sx={{ color: "grey" }} onClick={() => alert('Editado!')} />
 
-      </Paper>
-    </Box>
+                        </Stack>
+
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        align='right'
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {row.producto}
+                      </TableCell>
+                      <TableCell align="right">{row.cantidad}</TableCell>
+                      <TableCell align="right">{row.precioVenta}</TableCell>
+                      <TableCell align="right">{row.categoria}</TableCell>
+                      <TableCell align="right">{row.id}</TableCell>
+                    </TableRow>
+                  );
+                }) :
+
+                  <h1>cargando...</h1>}
+                {datos.length > 0 && emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {
+            datos.length > 0 &&
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={datos.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          }
+
+        </Paper>
+      </Box>
     </>
   );
 }
