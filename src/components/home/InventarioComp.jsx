@@ -303,9 +303,8 @@ const InventarioComp = () => {
       localStorage.setItem('inventario', JSON.stringify(rows))
       setDatos(rows);
     } else {
-      const datosnuevos = [JSON.parse(localStorage.getItem('inventario'))]
-
-      setDatos(datosnuevos)
+      
+      setDatos(JSON.parse(localStorage.getItem('inventario')))
 
     }
   }, [])
@@ -406,7 +405,7 @@ const InventarioComp = () => {
                 }) :
 
                   <h1>cargando...</h1>}
-                {datos.length > 0 && emptyRows > 0 && (
+                {visibleRows.length > 0 && emptyRows > 0 && (
                   <TableRow
                     style={{
                       height: (53) * emptyRows,
@@ -419,7 +418,7 @@ const InventarioComp = () => {
             </Table>
           </TableContainer>
           {
-            datos.length > 0 &&
+            visibleRows.length > 0 &&
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"

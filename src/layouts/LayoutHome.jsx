@@ -66,9 +66,7 @@ function LayoutHome() {
     const [value, setValue] = React.useState(pathToIndex(location.pathname));
   
     const navigate = useNavigate();
-    React.useEffect(()=>{
-       console.log("efecto secundario: jaja")
-    },[])
+
 
     React.useEffect(() => {
         switch (value) {
