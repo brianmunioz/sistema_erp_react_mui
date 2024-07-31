@@ -303,7 +303,7 @@ const InventarioComp = () => {
       localStorage.setItem('inventario', JSON.stringify(rows))
       setDatos(rows);
     } else {
-      const datosnuevos = [...JSON.parse(localStorage.getItem('inventario')), createData(99, 'Muñeco gallardo', 'Muñecos', 1, 1)]
+      const datosnuevos = [JSON.parse(localStorage.getItem('inventario'))]
 
       setDatos(datosnuevos)
 
