@@ -4,7 +4,6 @@ import LayoutHome from "../layouts/LayoutHome";
 import InventarioComp from "../components/home/InventarioComp";
 import VenderComp from "../components/home/VenderComp";
 import EstadisticasComp from "../components/home/EstadisticasComp";
-import ActividadesComp from "../components/home/ActividadesComp";
 
 export const router = createBrowserRouter([
     
@@ -16,7 +15,6 @@ export const router = createBrowserRouter([
        
         {path: 'vender', element: <VenderComp/>},
         {path: 'estadisticas', element: <EstadisticasComp/>},
-        {path: 'actividad', element: <ActividadesComp/>},       
       ],
     },
     

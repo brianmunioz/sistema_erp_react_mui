@@ -5,9 +5,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import {  Container, Stack, Toolbar } from '@mui/material';
-import CambiarRolComp from '../components/btnCambiarRol/CambiarRolComp';
-import CloseIcon from '@mui/icons-material/Close';
+import {  Container, Stack, useMediaQuery } from '@mui/material';
+import MobileNav from '../components/mobileNav/MobileNav';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -45,8 +44,6 @@ function a11yProps(index) {
 
 function LayoutHome() {
     const location = useLocation();
-    
-
 
     const pathToIndex = (path) => {
         switch (path) {
@@ -56,8 +53,6 @@ function LayoutHome() {
                 return 2;
             case '/estadisticas':
                 return 3;
-            case '/actividad':
-                return 4;
             default:
                 return 1;
         }
@@ -66,7 +61,7 @@ function LayoutHome() {
     const [value, setValue] = React.useState(pathToIndex(location.pathname));
   
     const navigate = useNavigate();
-
+const mobile = useMediaQuery("(max-width: 1100px)");
 
     React.useEffect(() => {
         switch (value) {
@@ -75,10 +70,7 @@ function LayoutHome() {
                 case 2: navigate('/vender')
                 break;
                 case 3: navigate('/estadisticas')
-                break;
-                case 4: navigate('/actividad')
-                break;
-            
+                break;            
             default: break;
 
         }
@@ -104,8 +96,12 @@ function LayoutHome() {
     return (
         <>
         <Box
-            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh', width: "100vw" }}
+            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex',flexDirection: mobile? 'column': 'row' , height: '100vh', width: "100vw" }}
         >
+            {mobile? 
+<MobileNav/>
+:
+            
             <Tabs
                 orientation="vertical"
                 variant="scrollable"
@@ -128,12 +124,13 @@ function LayoutHome() {
                 <Tab label="Inventario" {...a11yProps(0)} />
                 <Tab label="Vender" {...a11yProps(1)} />
                 <Tab label="Estadisticas" {...a11yProps(2)} />
-                <Tab label="Actividad" {...a11yProps(3)} />
 
 
             </Tabs>
-            <Stack value={value} style={{ width: "calc(100vw - 300px)", padding: 0 }} index={value}>
-                <CambiarRolComp />
+            
+            }
+            
+            <Stack value={value} style={{ width: mobile ? '100vw':"calc(100vw - 300px)", padding: 0 }} index={value}>
                 <Container fluid>
                     <Outlet />
                 </Container>

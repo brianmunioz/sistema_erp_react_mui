@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import { visuallyHidden } from '@mui/utils';
 import { Colors } from '../../utils/Colors';
-import { AppBar, Button, Dialog, IconButton, Slide, Stack, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { AppBar, Button, Dialog, IconButton, Slide, Stack, TextField, Select, MenuItem, InputLabel, FormControl, LinearProgress, Alert, Snackbar } from '@mui/material';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -167,132 +167,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-function EnhancedTableToolbar(props) {
-  const [open, setOpen] = React.useState(false);
-  const [productonuevo, setProductonuevo] = React.useState({
-    producto: '',
-    categoria: '',
-    precioVenta: '',
-    cantidad: 1
-  })
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setProductonuevo({
-      producto: '',
-      categoria: '',
-      precioVenta: '',
-      cantidad: 1
-    })
-    setOpen(false);
-  };
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        bgcolor: Colors.cuaternary.main
-      }}
-    >
-
-      <Typography
-        sx={{ flex: '1 1 100%' }}
-        variant="h6"
-        color={'primary'}
-        fontWeight={800}
-        id="tableTitle"
-        component="div"
-      >
-        Stock de productos
-      </Typography>
-
-      <Button variant="contained" sx={{ fontWeight: 800 }} onClick={async () => {
-        handleClickOpen()
-      }} color="secondary">Agregar</Button>
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Agregar Producto
-            </Typography>
-            <Button autoFocus color="inherit" onClick={
-              () => {
-                console.log(productonuevo)
-                const regexDecimales = /^\d*\.?\d*$/;
-                const regexNaturales = /^\d*$/;
-                if (!productonuevo.producto) {
-                  alert("debe ingresar el nombre del producto")
-
-                } else if (!productonuevo.cantidad || !regexNaturales.test(productonuevo.cantidad)) {
-                  alert('Cantidad inválida')
-                } else if (!productonuevo.precioCompra || !regexDecimales.test(productonuevo.precioCompra)) {
-                  alert('precio de compra inválida')
-                } else if (!productonuevo.precioVenta || !regexDecimales.test(productonuevo.precioVenta)) {
-                  alert('precioVenta  ')
-                }else{
-                  const productosActualizados = JSON.parse(localStorage.getItem('inventario'))
-                  productosActualizados.push(createData(uuidv4(),productonuevo.producto,
-                  productonuevo.categoria,
-                   productonuevo.precioCompra,
-                  productonuevo.precioVenta,
-                productonuevo.cantidad))
-                  localStorage.setItem('inventario', JSON.stringify(productosActualizados))
-                  alert("Producto guardado! ");
-                  handleClose();
-                }
-              }
-
-            }>
-              Guardar
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Stack direction={'column'} justifyContent="space-between" alignItems={'center'} p={5}>
-          <TextField sx={{ marginBottom: 2 }} value={productonuevo.producto} onChange={(e) => setProductonuevo({ ...productonuevo, producto: e.target.value })} fullWidth label="Nombre del producto" />
-          <TextField sx={{ marginBottom: 2 }} value={productonuevo.precioCompra} onChange={(e) => setProductonuevo({ ...productonuevo, precioCompra: e.target.value })} fullWidth label="Precio de compra" />
-          <TextField sx={{ marginBottom: 2 }} value={productonuevo.precioVenta} onChange={(e) => setProductonuevo({ ...productonuevo, precioVenta: e.target.value })} fullWidth label="Precio de venta" />
-          <TextField type='number' sx={{ marginBottom: 2 }} value={productonuevo.cantidad} onChange={(e) => setProductonuevo({ ...productonuevo, cantidad: e.target.value })} fullWidth label="Cantidad" />
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
-            <InputLabel id="demo-simple-select-standard-label">Categoria</InputLabel>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={productonuevo.categoria} onChange={(e) => setProductonuevo({ ...productonuevo, categoria: e.target.value })}
-              label="Categoria"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={'Accesorios'}>Accesorios</MenuItem>
-              <MenuItem value={'Teléfonos'}>Teléfonos</MenuItem>
-              <MenuItem value={'Computadoras'}>Computadoras</MenuItem>
-              <MenuItem value={'Periféricos'}>Periféricos</MenuItem>
-              <MenuItem value={'Redes'}>Redes</MenuItem>
-            </Select>
-          </FormControl>
-
-        </Stack>
-      </Dialog>
-
-    </Toolbar>
-  );
-}
 
 
 
@@ -303,7 +178,7 @@ const InventarioComp = () => {
       localStorage.setItem('inventario', JSON.stringify(rows))
       setDatos(rows);
     } else {
-      
+
       setDatos(JSON.parse(localStorage.getItem('inventario')))
 
     }
@@ -339,22 +214,161 @@ const InventarioComp = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const agregarProducto = () => {
 
+  const [open, setOpen] = React.useState(false);
+  const [openEliminar, setOpenEliminar] = React.useState(false);
 
-  }
+  const [modoEditar, setModoEditar] = React.useState(false);
+  const [exito, setExito] = React.useState(false);
+  const [error, setError] = React.useState({bool: false, msg: ''})
+  const [indexProductoEditar, setIndexProductoEditar] = React.useState(0);
+  const [productonuevo, setProductonuevo] = React.useState({
+    producto: '',
+    categoria:'',
+    precioCompra: '',
+    precioVenta: '',
+    cantidad: 1
+  })
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  const handleClose = () => {
+    setProductonuevo({
+      producto: '',
+      categoria: '',
+      precioCompra: '',
+      precioVenta: '',
+      cantidad: 1
+    })
+    setOpen(false);
+    setModoEditar(false);
+    
+  };
+
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - datos.length) : 0;
 
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }} mt={5}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar />
+          <Toolbar
+            sx={{
+              pl: { sm: 2 },
+              pr: { xs: 1, sm: 1 },
+              bgcolor: Colors.cuaternary.main
+            }}
+          >
+
+            <Typography
+              sx={{ flex: '1 1 100%' }}
+              variant="h6"
+              color={'primary'}
+              fontWeight={800}
+              id="tableTitle"
+              component="div"
+            >
+              Stock de productos
+            </Typography>
+
+            <Button variant="contained" sx={{ fontWeight: 800 }} onClick={async () => {
+              handleClickOpen()
+              setModoEditar(false);
+            }} color="secondary">Agregar</Button>
+            <Dialog
+              fullScreen
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Transition}
+            >
+              <AppBar sx={{ position: 'relative' }}>
+                <Toolbar>
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                   {modoEditar ? "Editar producto": " Agregar Producto"}
+                  </Typography>
+                  <Button autoFocus color="inherit" onClick={
+                    () => {
+                      console.log(productonuevo)
+                      const regexDecimales = /^\d*\.?\d*$/;
+                      const regexNaturales = /^\d*$/;
+                      if (!productonuevo.producto) {
+                        setError({bool:true, msg:'debe ingresar el nombre del producto'})
+                      } else if (!productonuevo.cantidad || !regexNaturales.test(productonuevo.cantidad)) {
+                        setError({bool:true, msg:'Cantidad inválida'})
+                      } else if (!productonuevo.precioCompra || !regexDecimales.test(productonuevo.precioCompra)) {
+                        setError({bool:true, msg:'precio de compra inválida'})
+                      } else if (!productonuevo.precioVenta || !regexDecimales.test(productonuevo.precioVenta)) {
+                        setError({bool:true, msg:'precioVenta  '})
+                      } else {
+                        if(modoEditar){
+                          const auxDatos = datos;
+                          auxDatos[indexProductoEditar].cantidad = productonuevo.cantidad;
+                          auxDatos[indexProductoEditar].producto = productonuevo.producto;
+                          auxDatos[indexProductoEditar].precioCompra = productonuevo.precioCompra;
+                          auxDatos[indexProductoEditar].precioVenta = productonuevo.precioVenta;
+                          auxDatos[indexProductoEditar].categoria = productonuevo.categoria;
+                          const datosEditados = auxDatos;
+                          localStorage.setItem('inventario', JSON.stringify(datosEditados))
+                          setDatos(datosEditados);
+                          
+                        }else{
+                          const productosActualizados = JSON.parse(localStorage.getItem('inventario'))
+                          productosActualizados.push(createData(uuidv4(), productonuevo.producto,
+                            productonuevo.categoria,
+                            productonuevo.precioCompra,
+                            productonuevo.precioVenta,
+                            productonuevo.cantidad))
+                          localStorage.setItem('inventario', JSON.stringify(productosActualizados))
+                        }                       
+                        setExito(true)
+                        handleClose();
+                      }
+                    }
+
+                  }>
+                    {modoEditar? "Editar":"Guardar"}
+                  </Button>
+                </Toolbar>
+              </AppBar>
+              <Stack direction={'column'} justifyContent="space-between" alignItems={'center'} p={5}>
+                <TextField sx={{ marginBottom: 2 }} value={productonuevo.producto} onChange={(e) => setProductonuevo({ ...productonuevo, producto: e.target.value })} fullWidth label="Nombre del producto" />
+                <TextField sx={{ marginBottom: 2 }} value={productonuevo.precioCompra} onChange={(e) => setProductonuevo({ ...productonuevo, precioCompra: e.target.value })} fullWidth label="Precio de compra" />
+                <TextField sx={{ marginBottom: 2 }} value={productonuevo.precioVenta} onChange={(e) => setProductonuevo({ ...productonuevo, precioVenta: e.target.value })} fullWidth label="Precio de venta" />
+                <TextField type='number' sx={{ marginBottom: 2 }} value={productonuevo.cantidad} onChange={(e) => setProductonuevo({ ...productonuevo, cantidad: e.target.value })} fullWidth label="Cantidad" />
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
+                  <InputLabel id="demo-simple-select-standard-label">Categoria</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    value={productonuevo.categoria} onChange={(e) => setProductonuevo({ ...productonuevo, categoria: e.target.value })}
+                    label="Categoria"
+                  >
+                    <MenuItem value="">
+                      <em>Sin categoría</em>
+                    </MenuItem>
+                    <MenuItem value={'Accesorios'}>Accesorios</MenuItem>
+                    <MenuItem value={'Teléfonos'}>Teléfonos</MenuItem>
+                    <MenuItem value={'Computadoras'}>Computadoras</MenuItem>
+                    <MenuItem value={'Periféricos'}>Periféricos</MenuItem>
+                    <MenuItem value={'Redes'}>Redes</MenuItem>
+                  </Select>
+                </FormControl>
+
+              </Stack>
+            </Dialog>
+
+          </Toolbar>
           <TableContainer>
             <Table
               sx={{ minWidth: '100%' }}
@@ -367,7 +381,7 @@ const InventarioComp = () => {
 
               />
               <TableBody>
-                {visibleRows && visibleRows.length > 0 ? visibleRows.map((row, index) => {
+                {visibleRows && visibleRows.length > 0 && visibleRows.map((row, index) => {
 
                   const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -381,8 +395,23 @@ const InventarioComp = () => {
                     >
                       <TableCell >
                         <Stack direction="row" justifyContent="space-between">
-                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() => alert('borrado!')} />
-                          <CreateIcon sx={{ color: "grey" }} onClick={() => alert('Editado!')} />
+                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() =>{}} />
+                          <CreateIcon sx={{ color: "grey" }} onClick={async() => {
+                            const indexAeditar =  datos.findIndex(e => e.id == row.id)
+                            setProductonuevo({
+                              producto: datos[indexAeditar].producto,
+                              categoria: datos[indexAeditar].categoria,
+                              precioCompra: datos[indexAeditar].precioCompra,
+                              precioVenta: datos[indexAeditar].precioVenta,
+                              cantidad: datos[indexAeditar].cantidad
+                            })
+                            setIndexProductoEditar(indexAeditar);
+                            setOpen(true)
+                            setModoEditar(true)                            
+                          }
+
+
+                          } />
 
                         </Stack>
 
@@ -402,9 +431,12 @@ const InventarioComp = () => {
                       <TableCell align="right">{row.id}</TableCell>
                     </TableRow>
                   );
-                }) :
-
-                  <h1>cargando...</h1>}
+                })}
+                {visibleRows == 0 && datos.length == 0 &&
+                  <Typography color='primary'>No tiene productos cargados en su inventario</Typography>
+                }
+                {visibleRows == 0 && datos.length > 0 &&
+                  <LinearProgress color="primary" />}
                 {visibleRows.length > 0 && emptyRows > 0 && (
                   <TableRow
                     style={{
@@ -432,6 +464,28 @@ const InventarioComp = () => {
 
         </Paper>
       </Box>
+      <Snackbar open={exito && !error.bool} autoHideDuration={6000} onClose={()=>setExito(false)}>
+  <Alert
+    
+    severity="success"
+    variant="filled"
+    sx={{ width: '100%' }}
+  >
+
+   {modoEditar ? 'El producto se editó con éxito' :'El producto se agregó a la base de datos con éxito'} 
+  </Alert>
+</Snackbar>
+<Snackbar open={error.bool && !exito} autoHideDuration={6000} onClose={()=>setError({bool: false, msg:''})}>
+  <Alert
+    
+    severity="error"
+    variant="filled"
+    sx={{ width: '100%' }}
+  >
+
+    {error.msg}
+  </Alert>
+</Snackbar>
     </>
   );
 }
