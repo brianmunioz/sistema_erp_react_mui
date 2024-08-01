@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import CloseIcon from '@mui/icons-material/Close';
 import { v4 as uuidv4 } from 'uuid';
-
 import DeleteIcon from '@mui/icons-material/Delete';
 import CreateIcon from '@mui/icons-material/Create';
 import { visuallyHidden } from '@mui/utils';
@@ -179,9 +178,7 @@ const InventarioComp = () => {
       localStorage.setItem('inventario', JSON.stringify(rows))
       setDatos(rows);
     } else {
-
       setDatos(JSON.parse(localStorage.getItem('inventario')))
-
     }
   }, [])
 
@@ -337,6 +334,7 @@ const InventarioComp = () => {
                             productonuevo.precioVenta,
                             productonuevo.cantidad))
                           localStorage.setItem('inventario', JSON.stringify(productosActualizados))
+                          setDatos(productosActualizados)
                         }                       
                         setExito(true)
                         handleClose();
