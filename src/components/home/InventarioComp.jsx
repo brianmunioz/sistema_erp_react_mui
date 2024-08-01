@@ -20,6 +20,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import { visuallyHidden } from '@mui/utils';
 import { Colors } from '../../utils/Colors';
 import { AppBar, Button, Dialog, IconButton, Slide, Stack, TextField, Select, MenuItem, InputLabel, FormControl, LinearProgress, Alert, Snackbar } from '@mui/material';
+import EliminarDialog from '../dialogs/EliminarDialog';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -189,7 +190,21 @@ const InventarioComp = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [visibleRows, setVisibleRows] = React.useState([]);
-
+  const [open, setOpen] = React.useState(false);
+  const [openEliminar, setOpenEliminar] = React.useState(false);
+  const [modoEditar, setModoEditar] = React.useState(false);
+  const [exito, setExito] = React.useState(false);
+  const [error, setError] = React.useState({bool: false, msg: ''})
+  const [indexProductoEditar, setIndexProductoEditar] = React.useState(0);
+  const [idProductoEliminar, setIdProductoEliminar] = React.useState('');
+  const [nombreProdEliminar, setNombreProdEliminar] = React.useState('');
+  const [productonuevo, setProductonuevo] = React.useState({
+    producto: '',
+    categoria:'',
+    precioCompra: '',
+    precioVenta: '',
+    cantidad: 1
+  })
   React.useEffect(() => {
     const newVisibleRows = stableSort(datos, getComparator(order, orderBy))
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -201,11 +216,6 @@ const InventarioComp = () => {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
-
-
-
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -215,24 +225,19 @@ const InventarioComp = () => {
     setPage(0);
   };
 
-  const [open, setOpen] = React.useState(false);
-  const [openEliminar, setOpenEliminar] = React.useState(false);
 
-  const [modoEditar, setModoEditar] = React.useState(false);
-  const [exito, setExito] = React.useState(false);
-  const [error, setError] = React.useState({bool: false, msg: ''})
-  const [indexProductoEditar, setIndexProductoEditar] = React.useState(0);
-  const [productonuevo, setProductonuevo] = React.useState({
-    producto: '',
-    categoria:'',
-    precioCompra: '',
-    precioVenta: '',
-    cantidad: 1
-  })
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
+  const eliminarProducto = (id)=>{
+    const auxArray = datos;
+    const arraySinProd = auxArray.filter((e)=>e.id != id)
+   localStorage.setItem('inventario', JSON.stringify(arraySinProd))
+   setDatos(arraySinProd);
+   setError({bool:true, msg: 'Se eliminó un producto de la base de datos'})
+  }
 
   const handleClose = () => {
     setProductonuevo({
@@ -299,17 +304,19 @@ const InventarioComp = () => {
                   </Typography>
                   <Button autoFocus color="inherit" onClick={
                     () => {
-                      console.log(productonuevo)
                       const regexDecimales = /^\d*\.?\d*$/;
                       const regexNaturales = /^\d*$/;
                       if (!productonuevo.producto) {
-                        setError({bool:true, msg:'debe ingresar el nombre del producto'})
+                        setError({bool:true, msg:'Debe ingresar un nombre para el producto'})
                       } else if (!productonuevo.cantidad || !regexNaturales.test(productonuevo.cantidad)) {
-                        setError({bool:true, msg:'Cantidad inválida'})
+                        setError({bool:true, msg:'Debe ingresar una cantidad válida'})
                       } else if (!productonuevo.precioCompra || !regexDecimales.test(productonuevo.precioCompra)) {
-                        setError({bool:true, msg:'precio de compra inválida'})
+                        setError({bool:true, msg:'Debe ingresar un precio de compra que sea válido'})
                       } else if (!productonuevo.precioVenta || !regexDecimales.test(productonuevo.precioVenta)) {
-                        setError({bool:true, msg:'precioVenta  '})
+                        setError({bool:true, msg:'Debe ingresar un precio de venta que sea válido'})
+                      } else if(!productonuevo.categoria){
+                        setError({bool:true, msg:'Debe seleccionar una categoría'})
+
                       } else {
                         if(modoEditar){
                           const auxDatos = datos;
@@ -354,9 +361,6 @@ const InventarioComp = () => {
                     value={productonuevo.categoria} onChange={(e) => setProductonuevo({ ...productonuevo, categoria: e.target.value })}
                     label="Categoria"
                   >
-                    <MenuItem value="">
-                      <em>Sin categoría</em>
-                    </MenuItem>
                     <MenuItem value={'Accesorios'}>Accesorios</MenuItem>
                     <MenuItem value={'Teléfonos'}>Teléfonos</MenuItem>
                     <MenuItem value={'Computadoras'}>Computadoras</MenuItem>
@@ -395,7 +399,11 @@ const InventarioComp = () => {
                     >
                       <TableCell >
                         <Stack direction="row" justifyContent="space-between">
-                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() =>{}} />
+                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() =>{
+                            setIdProductoEliminar(row.id)
+                            setNombreProdEliminar(row.producto)
+                            setOpenEliminar(true)
+                          }} />
                           <CreateIcon sx={{ color: "grey" }} onClick={async() => {
                             const indexAeditar =  datos.findIndex(e => e.id == row.id)
                             setProductonuevo({
@@ -486,6 +494,7 @@ const InventarioComp = () => {
     {error.msg}
   </Alert>
 </Snackbar>
+<EliminarDialog abrir={openEliminar} setAbrir={setOpenEliminar} producto={nombreProdEliminar} aceptarFuncion={()=>eliminarProducto(idProductoEliminar)}/>
     </>
   );
 }
