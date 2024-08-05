@@ -95,6 +95,12 @@ const headCells = [
     label: 'Cantidad',
   },
   {
+    id: 'precioCompra',
+    numeric: true,
+    disablePadding: false,
+    label: 'Precio compra',
+  },
+  {
     id: 'precioVenta',
     numeric: true,
     disablePadding: false,
@@ -432,6 +438,8 @@ const InventarioComp = () => {
                         {row.producto}
                       </TableCell>
                       <TableCell align="right">{row.cantidad}</TableCell>
+                      <TableCell align="right">{row.precioCompra}</TableCell>
+
                       <TableCell align="right">{row.precioVenta}</TableCell>
                       <TableCell align="right">{row.categoria}</TableCell>
                       <TableCell align="right">{row.id}</TableCell>
