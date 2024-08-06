@@ -18,6 +18,7 @@ import { visuallyHidden } from '@mui/utils';
 import { Colors } from '../../utils/Colors';
 import { AppBar, Button, Dialog, IconButton, Slide, Stack, LinearProgress, Alert, Snackbar } from '@mui/material';
 import SelectProductos from '../selects/SelectProductos';
+import ProductosVentaDialog from '../dialogs/ProductosVentaDialog';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -142,12 +143,19 @@ const VenderComp = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [visibleRows, setVisibleRows] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [productosAmostrar, setProductosAmostrar] = React.useState([]);
+  const [factura, setFactura] = React.useState(false);
+  const [fecha, setFecha] = React.useState('');
+
   const [exito, setExito] = React.useState(false);
   const [error, setError] = React.useState({ bool: false, msg: '' })
   const [guardarClick, setGuardarClick] = React.useState(false);
 
   const [guardar, setGuardar] = React.useState(false)
-
+React.useEffect(()=>{
+  const inventarioVendidoLS = localStorage.getItem('inventario-vendido') ? JSON.parse(localStorage.getItem('inventario-vendido')) : [];
+      setProdVendidos(inventarioVendidoLS)
+},[guardarClick])
   React.useEffect(() => {
     setDatos(localStorage.getItem('ventas') ? JSON.parse(localStorage.getItem('ventas')) : [])
   }, [guardarClick])
@@ -188,9 +196,11 @@ const VenderComp = () => {
     }, 500)
 
   };
-  const mostrarVenta = (id) => {
-    const ventasProd = prodVendidos.filter(e => e.idVenta === id)
-    console.log(ventasProd)
+  const mostrarVenta = (id,fechaVenta) => {
+    const ventasProd = JSON.parse(JSON.stringify(prodVendidos))
+    setFactura(true)
+    setFecha(fechaVenta);
+    setProductosAmostrar(ventasProd.filter(e => e.idVenta === id))
 
 
   }
@@ -294,7 +304,7 @@ const VenderComp = () => {
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell sx={{ display: 'flex', justifyContent: 'center', width: '90px', cursor: 'pointer' }} onClick={() => {
-                        mostrarVenta(row.idVenta)
+                        mostrarVenta(row.id, row.fecha)
                       }} >
                         <RemoveRedEyeIcon sx={{ color: Colors.primary.main }} />
                       </TableCell>
@@ -368,6 +378,7 @@ const VenderComp = () => {
           {error.msg}
         </Alert>
       </Snackbar>
+      <ProductosVentaDialog open={factura} setOpen={setFactura} fechaVenta = {fecha} productos={productosAmostrar}/>
     </>
   );
 }
