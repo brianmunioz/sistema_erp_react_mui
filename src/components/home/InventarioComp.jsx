@@ -186,6 +186,8 @@ const InventarioComp = () => {
     } else {
       setDatos(JSON.parse(localStorage.getItem('inventario')))
     }
+    setTimeout(()=>{setIsLoading(false)},700)
+
   }, [])
 
   const [order, setOrder] = React.useState('asc');
@@ -195,6 +197,8 @@ const InventarioComp = () => {
   const [visibleRows, setVisibleRows] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [openEliminar, setOpenEliminar] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+
   const [modoEditar, setModoEditar] = React.useState(false);
   const [exito, setExito] = React.useState(false);
   const [error, setError] = React.useState({bool: false, msg: ''})
@@ -389,7 +393,7 @@ const InventarioComp = () => {
 
               />
               <TableBody>
-                {visibleRows && visibleRows.length > 0 && visibleRows.map((row, index) => {
+                {!isLoading && visibleRows && visibleRows.length > 0 && visibleRows.map((row, index) => {
 
                   const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -446,11 +450,7 @@ const InventarioComp = () => {
                     </TableRow>
                   );
                 })}
-                {visibleRows == 0 && datos.length == 0 &&
-                  <Typography color='primary'>No tiene productos cargados en su inventario</Typography>
-                }
-                {visibleRows == 0 && datos.length > 0 &&
-                  <LinearProgress color="primary" />}
+               
                 {visibleRows.length > 0 && emptyRows > 0 && (
                   <TableRow
                     style={{
@@ -463,6 +463,12 @@ const InventarioComp = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          {!isLoading && visibleRows == 0 && datos.length == 0 &&
+              <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>No tiene ventas cargados en su inventario</Typography>
+            }
+            {isLoading &&
+              <LinearProgress color="primary" />
+            }
           {
             visibleRows.length > 0 &&
             <TablePagination
