@@ -141,6 +141,7 @@ export default function SelectProductos({ listoParaGuardar, setListoParaGuardar,
             <MenuItem
               key={prod.id}
               value={index}
+              disabled={parseInt(prod.cantidad) <= 0 ? true : false}
               style={getStyles(index, productsIndexes, theme)}
             >
               {prod.producto + ' (' + prod.cantidad + ')'}
