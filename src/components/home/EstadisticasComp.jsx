@@ -6,16 +6,13 @@ import { Colors } from '../../utils/Colors';
 const EstadisticasComp = () => {
   const [inventario, setInventario] = useState([])
   const [inventarioVendido, setInventarioVendido] = useState([]);
-  const [ventas, setVentas] = useState([]);
   const categoria = ['Computadoras', 'Teléfonos','Accesorios', 'Periféricos','Redes']
   const colorSpan = Colors.secondary.contrastText;
   useEffect(()=>{
     const inventarioLS = localStorage.getItem('inventario') ? JSON.parse(localStorage.getItem('inventario')) : [];
     const inventarioVendidoLS = localStorage.getItem('inventario-vendido') ? JSON.parse(localStorage.getItem('inventario-vendido')) : [];
-    const ventasLS = localStorage.getItem('ventas') ? JSON.parse(localStorage.getItem('ventas')) : [];
     setInventario(inventarioLS);
     setInventarioVendido(inventarioVendidoLS);
-    setVentas(ventasLS);
     
   },[])
   return (
