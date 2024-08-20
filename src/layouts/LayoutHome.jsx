@@ -118,7 +118,7 @@ const mobile = useMediaQuery("(max-width: 1100px)");
                 }}
             >
                 <Stack justifyContent="center" alignItems={'center'} py={2} width="300px">
-                    <img src='/erp.svg' width="90px"></img>
+                    <img src='/logo.png' width="200px"></img>
                 </Stack>
 
                 <Tab label="Inventario" {...a11yProps(0)} />

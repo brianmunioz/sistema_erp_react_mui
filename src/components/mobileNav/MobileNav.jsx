@@ -25,7 +25,7 @@ const MobileNav = () => {
 
   return (
     <>
-      <AppBar sx={{background: Colors.terciary.main}} position="sticky">
+      <AppBar sx={{background: Colors.cuaternary.main}} position="sticky">
         <Toolbar>
           <IconButton
             edge="start"
@@ -41,7 +41,7 @@ const MobileNav = () => {
           <Box
             component="img"
             sx={{ width: 40, height: 40,  }}
-            src="/erp.svg"
+            src="/logo.png"
             alt="erp"
           />
         </Toolbar>
@@ -60,7 +60,6 @@ const MobileNav = () => {
             </Stack>     
           {menuItems.map((text, index) => (
             <ListItem button key={index} onClick={()=>{
-                toggleDrawer(false)
 
                 if(index == 0 ){
                     navigate('/')
@@ -69,6 +68,9 @@ const MobileNav = () => {
                 }else{
                     navigate('/estadisticas')
                 }
+                
+                setDrawerOpen(false)
+
                 }}>
               <ListItemText primary={text}   sx={{fontWeight: 800, color: Colors.primary.main, textTransform: 'uppercase', 
                 textAlign: "center"
