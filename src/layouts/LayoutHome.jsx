@@ -130,7 +130,7 @@ const mobile = useMediaQuery("(max-width: 1100px)");
             
             }
             
-            <Stack value={value} style={{ width: mobile ? '100vw':"calc(100vw - 300px)", padding: 0 }} index={value}>
+            <Stack value={value} style={{ width: mobile ? '100vw':"calc(100vw - 300px)", padding: 0, background: "#fff" }} index={value}>
                 <Container fluid>
                     <Outlet />
                 </Container>
