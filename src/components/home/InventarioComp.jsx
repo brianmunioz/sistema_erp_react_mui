@@ -464,7 +464,7 @@ const InventarioComp = () => {
             </Table>
           </TableContainer>
           {!isLoading && visibleRows == 0 && datos.length == 0 &&
-              <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>No tiene ventas cargados en su inventario</Typography>
+              <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>No tiene productos cargados en su inventario</Typography>
             }
             {isLoading &&
               <LinearProgress color="primary" />
