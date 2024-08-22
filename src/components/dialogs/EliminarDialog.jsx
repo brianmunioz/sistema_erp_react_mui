@@ -6,13 +6,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-import { Colors } from '../../utils/Colors';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
- const EliminarDialog = ({abrir,setAbrir,aceptarFuncion,producto = ""})=> {
+ const EliminarDialog = ({abrir,setAbrir,aceptarFuncion,producto = "",pregunta = "",titulo=""})=> {
 
  
 
@@ -22,22 +21,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
   return (
       <Dialog
-      sx={{
-        '& .MuiDialog-paper': {
-          backgroundColor: Colors.cuaternary.main, // Cambia el color de fondo
-           // Cambia el color del texto
-        },
-      }}
+     
         open={abrir}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Está a punto de eliminar un producto"}</DialogTitle>
+        <DialogTitle>{titulo ? titulo :"Está a punto de eliminar un producto"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            ¿Está seguro que desea eliminar el producto {producto} ?
+            ¿{pregunta ? pregunta : "Está seguro que desea eliminar el producto"} {producto} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

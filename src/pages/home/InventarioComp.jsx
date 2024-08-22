@@ -19,7 +19,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import { visuallyHidden } from '@mui/utils';
 import { Colors } from '../../utils/Colors';
 import { AppBar, Button, Dialog, IconButton, Slide, Stack, TextField, Select, MenuItem, InputLabel, FormControl, LinearProgress, Alert, Snackbar } from '@mui/material';
-import EliminarDialog from '../dialogs/EliminarDialog';
+import EliminarDialog from '../../components/dialogs/EliminarDialog';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -36,19 +36,8 @@ function createData(id, producto, categoria, precioCompra, precioVenta, cantidad
 }
 
 const rows = [
-  createData(uuidv4(), 'Acer aspire 5', 'Computadoras', 1000, 1500, 67),
-  createData(uuidv4(), 'Samsung s20', 'Teléfonos', 300, 600, 20),
-  createData(uuidv4(), 'Smartwatch Android', 'Accesorios', 25.6, 34, 24),
-  createData(uuidv4(), 'Auriculares inalambricos', 'Accesorios', 29, 32, 5),
-  createData(uuidv4(), 'Monitor 4K', 'Periféricos', 75, 120, 49),
-  createData(uuidv4(), 'Placa gráfica 8gb', "Periféricos", 900, 2000, 3),
-  createData(uuidv4(), 'Router Wi fi', 'Redes', 9, 200, 37),
-  createData(uuidv4(), 'Teclado mecánico', 'Periféricos', 390, 500, 20),
-  createData(uuidv4(), 'Microfono', 'Periféricos', 26.9, 29, 65),
-  createData(uuidv4(), 'IPhone X', 'Teléfonos', 300, 950.5, 28),
-  createData(uuidv4(), 'Mouse inalámbrico', 'Periféricos', 20, 23, 81),
-  createData(uuidv4(), 'Luces led decorativas', 'Accesorios', 19.1, 20, 9),
-  createData(uuidv4(), 'Cargador de iphone', 'Accesorios', 18.23, 290, 10),
+  createData(uuidv4(), 'prueba', 'prueba', 999.9, 1500, 67),
+
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -186,7 +175,7 @@ const InventarioComp = () => {
     } else {
       setDatos(JSON.parse(localStorage.getItem('inventario')))
     }
-    setTimeout(()=>{setIsLoading(false)},700)
+    setTimeout(() => { setIsLoading(false) }, 700)
 
   }, [])
 
@@ -201,13 +190,13 @@ const InventarioComp = () => {
 
   const [modoEditar, setModoEditar] = React.useState(false);
   const [exito, setExito] = React.useState(false);
-  const [error, setError] = React.useState({bool: false, msg: ''})
+  const [error, setError] = React.useState({ bool: false, msg: '' })
   const [indexProductoEditar, setIndexProductoEditar] = React.useState(0);
   const [idProductoEliminar, setIdProductoEliminar] = React.useState('');
   const [nombreProdEliminar, setNombreProdEliminar] = React.useState('');
   const [productonuevo, setProductonuevo] = React.useState({
     producto: '',
-    categoria:'',
+    categoria: '',
     precioCompra: '',
     precioVenta: '',
     cantidad: 1
@@ -238,12 +227,12 @@ const InventarioComp = () => {
     setOpen(true);
   };
 
-  const eliminarProducto = (id)=>{
+  const eliminarProducto = (id) => {
     const auxArray = datos;
-    const arraySinProd = auxArray.filter((e)=>e.id != id)
-   localStorage.setItem('inventario', JSON.stringify(arraySinProd))
-   setDatos(arraySinProd);
-   setError({bool:true, msg: 'Se eliminó un producto de la base de datos'})
+    const arraySinProd = auxArray.filter((e) => e.id != id)
+    localStorage.setItem('inventario', JSON.stringify(arraySinProd))
+    setDatos(arraySinProd);
+    setError({ bool: true, msg: 'Se eliminó un producto de la base de datos' })
   }
 
   const handleClose = () => {
@@ -256,11 +245,12 @@ const InventarioComp = () => {
     })
     setOpen(false);
     setModoEditar(false);
-    
+
   };
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - datos.length) : 0;
+    const [categorias,setCategorias] = React.useState(localStorage.getItem('categorias') ? JSON.parse(localStorage.getItem('categorias')):['prueba'])
 
 
   return (
@@ -307,25 +297,25 @@ const InventarioComp = () => {
                     <CloseIcon />
                   </IconButton>
                   <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                   {modoEditar ? "Editar producto": " Agregar Producto"}
+                    {modoEditar ? "Editar producto" : " Agregar Producto"}
                   </Typography>
                   <Button autoFocus color="inherit" onClick={
                     () => {
                       const regexDecimales = /^\d*\.?\d*$/;
                       const regexNaturales = /^\d*$/;
                       if (!productonuevo.producto) {
-                        setError({bool:true, msg:'Debe ingresar un nombre para el producto'})
+                        setError({ bool: true, msg: 'Debe ingresar un nombre para el producto' })
                       } else if (!productonuevo.cantidad || !regexNaturales.test(productonuevo.cantidad)) {
-                        setError({bool:true, msg:'Debe ingresar una cantidad válida'})
+                        setError({ bool: true, msg: 'Debe ingresar una cantidad válida' })
                       } else if (!productonuevo.precioCompra || !regexDecimales.test(productonuevo.precioCompra)) {
-                        setError({bool:true, msg:'Debe ingresar un precio de compra que sea válido'})
+                        setError({ bool: true, msg: 'Debe ingresar un precio de compra que sea válido' })
                       } else if (!productonuevo.precioVenta || !regexDecimales.test(productonuevo.precioVenta)) {
-                        setError({bool:true, msg:'Debe ingresar un precio de venta que sea válido'})
-                      } else if(!productonuevo.categoria){
-                        setError({bool:true, msg:'Debe seleccionar una categoría'})
+                        setError({ bool: true, msg: 'Debe ingresar un precio de venta que sea válido' })
+                      } else if (!productonuevo.categoria) {
+                        setError({ bool: true, msg: 'Debe seleccionar una categoría' })
 
                       } else {
-                        if(modoEditar){
+                        if (modoEditar) {
                           const auxDatos = datos;
                           auxDatos[indexProductoEditar].cantidad = productonuevo.cantidad;
                           auxDatos[indexProductoEditar].producto = productonuevo.producto;
@@ -335,8 +325,8 @@ const InventarioComp = () => {
                           const datosEditados = auxDatos;
                           localStorage.setItem('inventario', JSON.stringify(datosEditados))
                           setDatos(datosEditados);
-                          
-                        }else{
+
+                        } else {
                           const productosActualizados = JSON.parse(localStorage.getItem('inventario'))
                           productosActualizados.push(createData(uuidv4(), productonuevo.producto,
                             productonuevo.categoria,
@@ -345,14 +335,14 @@ const InventarioComp = () => {
                             productonuevo.cantidad))
                           localStorage.setItem('inventario', JSON.stringify(productosActualizados))
                           setDatos(productosActualizados)
-                        }                       
+                        }
                         setExito(true)
                         handleClose();
                       }
                     }
 
                   }>
-                    {modoEditar? "Editar":"Guardar"}
+                    {modoEditar ? "Editar" : "Guardar"}
                   </Button>
                 </Toolbar>
               </AppBar>
@@ -369,11 +359,8 @@ const InventarioComp = () => {
                     value={productonuevo.categoria} onChange={(e) => setProductonuevo({ ...productonuevo, categoria: e.target.value })}
                     label="Categoria"
                   >
-                    <MenuItem value={'Accesorios'}>Accesorios</MenuItem>
-                    <MenuItem value={'Teléfonos'}>Teléfonos</MenuItem>
-                    <MenuItem value={'Computadoras'}>Computadoras</MenuItem>
-                    <MenuItem value={'Periféricos'}>Periféricos</MenuItem>
-                    <MenuItem value={'Redes'}>Redes</MenuItem>
+                    {categorias.length > 0 && categorias.map(e=> <MenuItem value={e}>{e}</MenuItem>)}
+                    
                   </Select>
                 </FormControl>
 
@@ -407,13 +394,13 @@ const InventarioComp = () => {
                     >
                       <TableCell >
                         <Stack direction="row" justifyContent="space-between">
-                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() =>{
+                          <DeleteIcon sx={{ color: "#F45C5C" }} onClick={() => {
                             setIdProductoEliminar(row.id)
                             setNombreProdEliminar(row.producto)
                             setOpenEliminar(true)
                           }} />
-                          <CreateIcon sx={{ color: "grey" }} onClick={async() => {
-                            const indexAeditar =  datos.findIndex(e => e.id == row.id)
+                          <CreateIcon sx={{ color: "grey" }} onClick={async () => {
+                            const indexAeditar = datos.findIndex(e => e.id == row.id)
                             setProductonuevo({
                               producto: datos[indexAeditar].producto,
                               categoria: datos[indexAeditar].categoria,
@@ -423,7 +410,7 @@ const InventarioComp = () => {
                             })
                             setIndexProductoEditar(indexAeditar);
                             setOpen(true)
-                            setModoEditar(true)                            
+                            setModoEditar(true)
                           }
 
 
@@ -450,7 +437,7 @@ const InventarioComp = () => {
                     </TableRow>
                   );
                 })}
-               
+
                 {visibleRows.length > 0 && emptyRows > 0 && (
                   <TableRow
                     style={{
@@ -464,11 +451,11 @@ const InventarioComp = () => {
             </Table>
           </TableContainer>
           {!isLoading && visibleRows == 0 && datos.length == 0 &&
-              <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>No tiene productos cargados en su inventario</Typography>
-            }
-            {isLoading &&
-              <LinearProgress color="primary" />
-            }
+            <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>No tiene productos cargados en su inventario</Typography>
+          }
+          {isLoading &&
+            <LinearProgress color="primary" />
+          }
           {
             visibleRows.length > 0 &&
             <TablePagination
@@ -484,29 +471,29 @@ const InventarioComp = () => {
 
         </Paper>
       </Box>
-      <Snackbar open={exito && !error.bool} autoHideDuration={6000} onClose={()=>setExito(false)}>
-  <Alert
-    
-    severity="success"
-    variant="filled"
-    sx={{ width: '100%' }}
-  >
+      <Snackbar open={exito && !error.bool} autoHideDuration={6000} onClose={() => setExito(false)}>
+        <Alert
 
-   {modoEditar ? 'El producto se editó con éxito' :'El producto se agregó a la base de datos con éxito'} 
-  </Alert>
-</Snackbar>
-<Snackbar open={error.bool && !exito} autoHideDuration={6000} onClose={()=>setError({bool: false, msg:''})}>
-  <Alert
-    
-    severity="error"
-    variant="filled"
-    sx={{ width: '100%' }}
-  >
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
 
-    {error.msg}
-  </Alert>
-</Snackbar>
-<EliminarDialog abrir={openEliminar} setAbrir={setOpenEliminar} producto={nombreProdEliminar} aceptarFuncion={()=>eliminarProducto(idProductoEliminar)}/>
+          {modoEditar ? 'El producto se editó con éxito' : 'El producto se agregó a la base de datos con éxito'}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={error.bool && !exito} autoHideDuration={6000} onClose={() => setError({ bool: false, msg: '' })}>
+        <Alert
+
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+
+          {error.msg}
+        </Alert>
+      </Snackbar>
+      <EliminarDialog abrir={openEliminar} setAbrir={setOpenEliminar} producto={nombreProdEliminar} aceptarFuncion={() => eliminarProducto(idProductoEliminar)} />
     </>
   );
 }

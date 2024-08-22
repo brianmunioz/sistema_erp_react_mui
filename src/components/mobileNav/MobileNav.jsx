@@ -21,7 +21,7 @@ const MobileNav = () => {
     setDrawerOpen(open);
   };
 
-  const menuItems = ['inventario', 'ventas', 'estadisticas'];
+  const menuItems = ['inventario', 'ventas', "categorias",'estadisticas'];
 
   return (
     <>
@@ -62,12 +62,14 @@ const MobileNav = () => {
             <ListItem button key={index} onClick={()=>{
 
                 if(index == 0 ){
-                    navigate('/')
+                    navigate('/productos/')
                 }else if(index == 1){
-                    navigate('/vender')
-                }else{
-                    navigate('/estadisticas')
-                }
+                    navigate('/productos/vender')
+                }else if(index==2){
+                    navigate('/productos/categorias')
+                }else {
+                  navigate('/productos/estadisticas')
+              }
                 
                 setDrawerOpen(false)
 
