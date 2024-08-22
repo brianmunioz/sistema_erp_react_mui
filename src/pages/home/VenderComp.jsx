@@ -343,7 +343,7 @@ const VenderComp = () => {
 
             </Table>
             {!isLoading && visibleRows == 0 && datos.length == 0 &&
-              <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>Aún no a realizado ventas</Typography>
+              <Typography color='primary' textAlign={'center'} fontWeight={800} p={2}>No tiene ventas realizadas</Typography>
             }
             {isLoading &&
               <LinearProgress color="primary" />

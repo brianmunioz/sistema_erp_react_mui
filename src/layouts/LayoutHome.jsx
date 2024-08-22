@@ -126,7 +126,7 @@ function LayoutHome() {
                         </Stack>
 
                         <Tab label="Inventario" {...a11yProps(0)} />
-                        <Tab label="Vender" {...a11yProps(1)} />
+                        <Tab label="Ventas" {...a11yProps(1)} />
                         <Tab label="Categorias" {...a11yProps(3)} />
 
                         <Tab label="Estadisticas" {...a11yProps(2)} />
