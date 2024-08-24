@@ -110,11 +110,27 @@ export default function SelectProductos({ listoParaGuardar, setListoParaGuardar,
   };
 
 
-  const handleCantidadChange = (index, newCantidad) => {
-    setCantidades(prev => ({
-      ...prev,
-      [index]: newCantidad,
-    }));
+  const handleCantidadChange = (index, newCantidad,i) => {
+    if(newCantidad > productosVendidos[i].cantidad){
+      console.log('mayor que cantidad')
+      setCantidades(prev => ({
+        ...prev,
+        [index]: productosVendidos[i].cantidad,
+      }));
+    }else if(newCantidad <=0){
+      console.log('menor igual que cantidad')
+
+      setCantidades(prev => ({
+        ...prev,
+        [index]: 1,
+      }));
+    }else{
+      setCantidades(prev => ({
+        ...prev,
+        [index]: newCantidad,
+      }));
+    }
+    
   };
 
   return (
@@ -164,7 +180,7 @@ export default function SelectProductos({ listoParaGuardar, setListoParaGuardar,
                       defaultValue: 1
                     }}
                     value={cantidades[e] || 1}
-                    onChange={(e) => handleCantidadChange(e.target.name, e.target.value)}
+                    onChange={(e) => handleCantidadChange(e.target.name, e.target.value, index)}
                     name={e}
                   />
                   <Stack direction='column' width='180px'>

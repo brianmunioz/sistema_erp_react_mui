@@ -237,6 +237,7 @@ const VenderComp = () => {
             <Button variant="contained" sx={{ fontWeight: 800 }} onClick={async () => {
               handleClickOpen()
             }} color="secondary">Vender</Button>
+            {/*Dialog vender */}
             <Dialog
               fullScreen
               open={open}
@@ -388,6 +389,7 @@ const VenderComp = () => {
       </Snackbar>
       <ProductosVentaDialog open={factura} setOpen={setFactura} fechaVenta={fecha} productos={productosAmostrar} />
     </>
+    
   );
 }
 export default VenderComp
