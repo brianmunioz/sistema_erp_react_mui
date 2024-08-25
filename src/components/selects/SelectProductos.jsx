@@ -111,15 +111,12 @@ export default function SelectProductos({ listoParaGuardar, setListoParaGuardar,
 
 
   const handleCantidadChange = (index, newCantidad,i) => {
-    if(newCantidad > productosVendidos[i].cantidad){
-      console.log('mayor que cantidad')
+    if(parseInt(newCantidad) > productosVendidos[i].cantidad){
       setCantidades(prev => ({
         ...prev,
         [index]: productosVendidos[i].cantidad,
       }));
     }else if(newCantidad <=0){
-      console.log('menor igual que cantidad')
-
       setCantidades(prev => ({
         ...prev,
         [index]: 1,
