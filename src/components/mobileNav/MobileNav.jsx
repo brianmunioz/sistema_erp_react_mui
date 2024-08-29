@@ -25,7 +25,7 @@ const MobileNav = () => {
 
   return (
     <>
-      <AppBar sx={{background: Colors.cuaternary.main}} position="sticky">
+      <AppBar sx={{background: Colors.cuaternary.main, boxShadow: "none"}} position="sticky">
         <Toolbar>
           <IconButton
             edge="start"
