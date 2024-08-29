@@ -55,9 +55,9 @@ const MobileNav = () => {
         sx={{ '& .MuiDrawer-paper': { width: '100%', background: Colors.cuaternary.main} }}
       >
         <List sx={{ padding: 2 }}>
-        <Stack alignItems={'flex-end'} key={'equis'}  sx={{cursor: "pointer", width: "100%"}} onClick={toggleDrawer(false)}>
-            <CloseIcon/>
-            </Stack>     
+        <ListItem  key={'equis'}  sx={{cursor: "pointer", width: "100%", display: "flex",justifyContent: "flex-end"}} >
+            <CloseIcon onClick={toggleDrawer(false)}/>
+            </ListItem>     
           {menuItems.map((text, index) => (
             <ListItem button key={index} onClick={()=>{
 
