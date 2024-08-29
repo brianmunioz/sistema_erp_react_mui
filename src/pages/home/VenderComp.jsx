@@ -268,10 +268,7 @@ const VenderComp = () => {
                       } else {
                         setExito(false)
                         setError({ bool: true, msg: 'Todavía no se puede guardar, verifique que tenga productos y sus cantidades correctas' })
-
                       }
-
-
                     }}
                   >
                     {"Generar venta"}

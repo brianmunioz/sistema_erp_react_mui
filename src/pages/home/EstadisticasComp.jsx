@@ -1,11 +1,15 @@
-import { InvertColorsOutlined } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { Colors } from '../../utils/Colors';
+import GananciasProductos from '../../components/stats/GananciasProductos';
+import GananciasCategorias from '../../components/stats/GananciaCategorias';
 
 const EstadisticasComp = () => {
   const [inventario, setInventario] = useState([])
   const [inventarioVendido, setInventarioVendido] = useState([]);
+  const [ganancias, setGanancias] = useState([]);
+  const [gananciasCat, setGananciasCat] = useState([]);
+
   const categoria = ['Computadoras', 'Teléfonos','Accesorios', 'Periféricos','Redes']
   const colorSpan = Colors.secondary.contrastText;
   useEffect(()=>{
@@ -13,31 +17,30 @@ const EstadisticasComp = () => {
     const inventarioVendidoLS = localStorage.getItem('inventario-vendido') ? JSON.parse(localStorage.getItem('inventario-vendido')) : [];
     setInventario(inventarioLS);
     setInventarioVendido(inventarioVendidoLS);
-    
+    setGanancias(
+       inventarioLS.map(
+        cat=>{return {producto: cat.producto,categoria:cat.categoria,ganancia: inventarioVendidoLS.filter(e=>e.producto === cat.producto).reduce((acumulador, actual) => acumulador + ((actual.precioVenta-actual.precioCompra)*actual.cantidad), 0).toFixed(2)}}
+      )
+      )
+
+      setGananciasCat(inventarioVendidoLS)
+      
   },[])
+  console.log(ganancias)
+
   return (
     <Box p={5}>
-    <Typography color="primary" fontWeight={800}> Inventario</Typography>
-    <Typography sx={{color: "grey"}} fontWeight={800}>Ganancia estimada:<span style={{color: colorSpan}}> ${inventario.reduce((acumulador, actual) => acumulador + ((actual.precioVenta - actual.precioCompra)*actual.cantidad), 0).toFixed(2)}</span></Typography>
-    <Typography sx={{color: "grey"}} fontWeight={800}>Costo: <span style={{color: colorSpan}}>${inventario.reduce((acumulador, actual) => acumulador + ((actual.precioCompra)*actual.cantidad), 0).toFixed(2)} </span></Typography>
-    <Typography sx={{color: "grey"}} fontWeight={800}>Total a vender a precio venta:<span style={{color: colorSpan}}> ${inventario.reduce((acumulador, actual) => acumulador + ((actual.precioVenta)*actual.cantidad), 0).toFixed(2)}</span></Typography>
+      {ganancias.length > 0 ? 
+      <>
+            <GananciasProductos data={ganancias}/>
+            <GananciasCategorias data={ganancias}/>
 
-    <Typography sx={{color: "grey"}} fontWeight={800}>Cantidad total: <span style={{color: colorSpan}}>{inventario.reduce((acumulador, actual) => acumulador + parseInt(actual.cantidad), 0)}</span></Typography>
-    <Typography  color="primary" fontWeight={800}> Ventas</Typography>
+            </>
+            :
 
-    <Typography sx={{color: "grey"}} fontWeight={800}>Ganancia de productos vendidos: <span style={{color: colorSpan}}>${inventarioVendido.reduce((acumulador, actual) => acumulador + ((actual.precioVenta - actual.precioCompra)*actual.cantidad), 0).toFixed(2)}</span></Typography>
-    <Typography sx={{color: "grey"}} fontWeight={800}>Total vendido (precio de venta): <span style={{color: colorSpan}}>${inventarioVendido.reduce((acumulador, actual) => acumulador + ((actual.precioVenta)*actual.cantidad), 0).toFixed(2)}</span></Typography>
-    <Typography  color="primary" fontWeight={800}> Ganancias obtenidas por categoría</Typography>
-    {
-      categoria.map(cat=><Typography sx={{color: "grey"}} fontWeight={800}>Total de categoría {cat}: <span style={{color: colorSpan}}>${inventarioVendido.filter(e=>e.categoria === cat).reduce((acumulador, actual) => acumulador + ((actual.precioVenta-actual.precioCompra)*actual.cantidad), 0).toFixed(2)}</span></Typography>)
-    }
-    <Typography color="primary" fontWeight={800}> Ganancias obtenidas por producto</Typography>
-    {
-      inventario.map(cat=><Typography sx={{color: "grey"}}fontWeight={800}>Total de {cat.producto}: <span style={{color: colorSpan}}>${inventarioVendido.filter(e=>e.producto === cat.producto).reduce((acumulador, actual) => acumulador + ((actual.precioVenta-actual.precioCompra)*actual.cantidad), 0).toFixed(2)}</span></Typography>)
-    }
-    
+    <Typography  color="primary" fontWeight={800}> No hay ventas realizadas</Typography>
 
-
+      }
     </Box>
   )
 }
