@@ -67,5 +67,5 @@ export default function GananciasCategorias({ data }) {
         ],
     };
 
-    return <Pie style={{ margin: "200px 0px" }} data={midata} options={misoptions} />;
+    return <Pie style={{ margin: "80px 0px" }} data={midata} options={misoptions} />;
 }
