@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <Stack direction={"column"} width="100vw" height="100vh" backgroundColor={Colors.cuaternary.main} justifyContent={"center"} alignItems={"center"}>
         <img src="/logo.png" width={"200px"} height={"200px"}/>
-        <Button onClick={()=>navigate('/productos')} variant="contained" color='primary'sx={{color:"#fff", fontWeight: "bold"}}>Entrar</Button>
+        <Button onClick={()=>navigate('/productos')} variant="contained" color='primary'sx={{color:"#fff", fontWeight: "bold"}}>Ingresar sin cuenta</Button>
        <Link 
        href="https://argenboost.com.ar" 
        mt={5} 
