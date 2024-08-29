@@ -54,10 +54,17 @@ const MobileNav = () => {
         onClose={toggleDrawer(false)}
         sx={{ '& .MuiDrawer-paper': { width: '100%', background: Colors.cuaternary.main} }}
       >
+         <Stack justifyContent={"space-between"} direction="row" style={{width: "100%",paddingTop: "20px"}} key={'equis'}   >
+        <Box
+            component="img"
+            sx={{ width: 40, height: 40, marginLeft: "20px" }}
+            src="/logo.png"
+            alt="erp"
+          />
+            <CloseIcon style={{cursor: "pointer", marginRight: "20px"}} onClick={toggleDrawer(false)}/>
+            </Stack> 
         <List sx={{ padding: 2 }}>
-        <ListItem  key={'equis'}  sx={{cursor: "pointer", width: "100%", display: "flex",justifyContent: "flex-end"}} >
-            <CloseIcon onClick={toggleDrawer(false)}/>
-            </ListItem>     
+           
           {menuItems.map((text, index) => (
             <ListItem button key={index} onClick={()=>{
 
@@ -74,7 +81,7 @@ const MobileNav = () => {
                 setDrawerOpen(false)
 
                 }}>
-              <ListItemText primary={text}   sx={{fontWeight: 800, color: Colors.primary.main, textTransform: 'uppercase', 
+              <ListItemText primary={text}   sx={{'& .MuiListItemText-primary': { fontWeight: 600}, color: Colors.primary.main, textTransform: 'uppercase', 
                 textAlign: "center"
               }} />
             </ListItem>
