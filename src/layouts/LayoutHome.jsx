@@ -100,7 +100,7 @@ function LayoutHome() {
     return (
         <>
             <Box
-                sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', flexDirection: mobile ? 'column' : 'row', height: '100vh', width: "100vw" }}
+                sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', flexDirection: mobile ? 'column' : 'row', height: '100%', minHeight: "100vh", width: "100vw" }}
             >
                 {mobile ?
                     <MobileNav />

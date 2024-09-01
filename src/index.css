@@ -23,6 +23,7 @@ a:hover {
 }
 *:focus {
   outline: none!important;
+  
 }
 
 body {
@@ -32,6 +33,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: #ffffff;
+  overflow-x: hidden;
 }
 
 h1 {

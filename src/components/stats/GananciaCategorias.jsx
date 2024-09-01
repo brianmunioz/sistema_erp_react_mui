@@ -25,6 +25,7 @@ export default function GananciasCategorias({ data }) {
     var misoptions = {
         responsive: true,
         animation: true,
+
         plugins: {
             legend: {
                 display: true,

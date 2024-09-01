@@ -28,6 +28,8 @@ const productos = data.map(gan => gan.producto)
 var misoptions = {
     responsive : true,
     animation : true,
+  
+
     plugins : {
         legend : {
             display : false
@@ -38,6 +40,7 @@ var misoptions = {
             font: {
                 size: 18,
             },
+            
           },
     },
     indexAxis: 'y',
@@ -66,5 +69,5 @@ var midata = {
 };
 
 
-    return <Bar data={midata} options={misoptions} />
+    return  <Bar style={{marginBottom: "30px"}} data={midata} options={misoptions} />
 }
