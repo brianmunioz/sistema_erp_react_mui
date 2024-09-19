@@ -10,7 +10,7 @@ const HomePage = () => {
         <img src="/logo.png" width={"200px"} height={"200px"}/>
         <Button onClick={()=>navigate('/productos')} variant="contained" color='primary'sx={{color:"#fff", fontWeight: "bold"}}>Ingresar sin cuenta</Button>
        <Link 
-       href="https://argenboost.com.ar" 
+       href="https://appsbucket.space" 
        mt={5} 
        height={"20px"} 
        sx={{
@@ -21,7 +21,7 @@ const HomePage = () => {
     underline="none" 
     target="_blank" 
     fontWeight={800} 
-    color="#371B58">Powered by <img src='/argenboost.svg' style={{position: "relative", top: "16px"}} width={"40px"} height={"40px"}/> Argenboost</Link>
+    color="#371B58">Powered by <img src='/appsbucket.svg' style={{position: "relative", top: "16px"}} width={"40px"} height={"40px"}/> Apps Bucket</Link>
     </Stack>
   )
 }
