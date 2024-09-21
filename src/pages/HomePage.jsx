@@ -8,7 +8,9 @@ const HomePage = () => {
   return (
     <Stack direction={"column"} width="100vw" height="100vh" backgroundColor={Colors.cuaternary.main} justifyContent={"center"} alignItems={"center"}>
         <img src="/logo.png" width={"200px"} height={"200px"}/>
-        <Button onClick={()=>navigate('/productos')} variant="contained" color='primary'sx={{color:"#fff", fontWeight: "bold"}}>Ingresar sin cuenta</Button>
+        <Button onClick={()=>navigate('/productos')} variant="contained" color='primary'sx={{color:"#fff", fontWeight: "bold"}}>
+          Ingresar
+          </Button>
        <Link 
        href="https://appsbucket.space" 
        mt={5} 
