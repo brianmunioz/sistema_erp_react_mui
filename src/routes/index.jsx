@@ -13,21 +13,17 @@ export const router = createBrowserRouter([
       path: '/productos',
       element: <LayoutHome />,
       children: [
-        { index: true, element: <InventarioComp />  },
-       
+        { index: true, element: <InventarioComp />  },       
         {path: 'vender', element: <VenderComp/>},
         {path: 'estadisticas', element: <EstadisticasComp/>},
         {path: 'categorias', element: <CategoriasComp/>},
-
       ],
     },{
       path: '/',
       element: <HomePage/>
   },
-
-    {
-        path: '*',
-        element: <PageNotFound/>
-    }  
-
-  ]);
+  {
+    path: '*',
+    element: <PageNotFound/>
+  }  
+]);

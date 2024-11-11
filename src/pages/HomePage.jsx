@@ -11,19 +11,7 @@ const HomePage = () => {
         <Button onClick={()=>navigate('/productos')} variant="contained" color='primary'sx={{color:"#fff", fontWeight: "bold"}}>
           Ingresar
           </Button>
-       <Link 
-       href="https://appsbucket.space" 
-       mt={5} 
-       height={"20px"} 
-       sx={{
-        cursor: "pointer",
-        "&:hover": {
-      color: "#371B58" 
-    }}} 
-    underline="none" 
-    target="_blank" 
-    fontWeight={800} 
-    color="#371B58">Powered by <img src='/appsbucket.svg' style={{position: "relative", top: "16px"}} width={"40px"} height={"40px"}/> Apps Bucket</Link>
+      
     </Stack>
   )
 }
